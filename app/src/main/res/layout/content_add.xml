@@ -63,6 +63,7 @@
                 android:id="@+id/etDay"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:hint="@string/day" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,6 +78,7 @@
                 android:id="@+id/etMonth"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:hint="@string/month" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,6 +96,7 @@
                 android:id="@+id/etYear"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:hint="@string/year" />
 
         </com.google.android.material.textfield.TextInputLayout>

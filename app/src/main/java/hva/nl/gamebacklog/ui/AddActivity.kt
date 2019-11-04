@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.TypeConverters
 import hva.nl.gamebacklog.R
@@ -15,10 +13,8 @@ import hva.nl.gamebacklog.model.Game
 
 import kotlinx.android.synthetic.main.activity_add.*
 import kotlinx.android.synthetic.main.content_add.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 const val EXTRA_GAME = "EXTRA_GAME"
 
@@ -37,26 +33,49 @@ class AddActivity : AppCompatActivity() {
         fab.setOnClickListener { onSaveClick() }
     }
 
+    private fun validateEmptyFields(): Boolean {
+        if (etTitle.text.toString().isBlank()) {
+            Toast.makeText(this,"Please fill in a title"
+                , Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (etPlatform.text.toString().isBlank()) {
+            Toast.makeText(this,"Please fill in a platform"
+                , Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (etDay.text.toString().isBlank() || etMonth.text.toString().isBlank() ||
+            etYear.text.toString().isBlank()) {
+            Toast.makeText(this,"Please fill in a date"
+                , Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
     @SuppressLint("SimpleDateFormat")
     private fun onSaveClick() {
-        if (etTitle.text.toString().isNotBlank() && etPlatform.text.toString().isNotBlank()
-            && etDay.text.toString().isNotBlank() && etMonth.text.toString().isNotBlank() &&
-            etYear.text.toString().isNotBlank()) {
-
+        if (validateEmptyFields()) {
             val concatenatedString = (etDay.text.toString() + "-" + etMonth.text.toString() + "-" + etYear.text.toString())
-            val date = SimpleDateFormat("dd-MM-yyyy").parse(concatenatedString)
+            try {
+                val date = SimpleDateFormat("dd-MM-yyyy")
+                date.isLenient = false
+                val parsedDate = date.parse(concatenatedString)
 
-            val game = Game(etTitle.text.toString(),
-                etPlatform.text.toString(), date
-            )
+                val game = Game(etTitle.text.toString(), etPlatform.text.toString(), parsedDate)
+                val resultIntent = Intent()
 
-            val resultIntent = Intent()
-            resultIntent.putExtra(EXTRA_GAME, game)
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-        } else {
-            Toast.makeText(this,"Make sure every field is filled in!"
-                , Toast.LENGTH_SHORT).show()
+                resultIntent.putExtra(EXTRA_GAME, game)
+                setResult(Activity.RESULT_OK, resultIntent)
+
+                finish()
+            } catch (e : Exception) {
+                Toast.makeText(this,"Please fill in a valid date"
+                    , Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

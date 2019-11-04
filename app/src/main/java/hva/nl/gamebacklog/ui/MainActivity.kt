@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import hva.nl.gamebacklog.R
 import hva.nl.gamebacklog.model.Game
 import kotlinx.android.synthetic.main.activity_main.*
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         rvGames.layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
         rvGames.adapter = gameAdapter
-        rvGames.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+        rvGames.addItemDecoration(DividerItemDecoration(this@MainActivity, 0))
         createItemTouchHelper().attachToRecyclerView(rvGames)
 
         fab.setOnClickListener { startAddActivity() }
@@ -109,5 +110,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun deleteAllGames() {
         mainActivityViewModel.deleteAllGames()
+
+        val itemsToBeDeleted = games
+        val deleteSnackBar = Snackbar.make(rvGames,
+            "Successfully deleted backlog", Snackbar.LENGTH_LONG)
+        deleteSnackBar.setAction("Undo", UndoListener(itemsToBeDeleted, mainActivityViewModel))
+        deleteSnackBar.show()
     }
 }
